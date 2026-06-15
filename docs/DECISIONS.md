@@ -339,7 +339,38 @@ Expected Benefits:
 * Maintains roadmap consistency
 * Supports future Transfermarkt integration
 
+# Decision 013
 
+Date: 2026-06-15
+
+Status: Accepted
+
+Category: Data Engineering
+
+Decision:
+
+MVP 1 dataset will be obtained via manual CSV export directly from FBref.
+
+The following four FBref stat tables will be exported for Big 5 European Leagues, season 2024-25:
+
+- Standard Stats
+- Shooting Stats
+- Passing Stats
+- Possession Stats
+
+Reason:
+
+- Directly sourced from FBref
+- No automated scraping
+- No third-party dependency
+- Lowest complexity
+- Consistent with Decision 011
+
+Future Plan:
+
+MVP 1: Manual export
+MVP 2: Manual refresh
+MVP 3: Automated ingestion pipeline
 ---
 
 END OF DOCUMENT
