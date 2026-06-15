@@ -71,12 +71,16 @@ Display Profile
 * Position
 * Preferred Foot
 
-### Season Statistics
+### Season Statistics (MVP 1 — Confirmed in dataset)
 
 * Appearances
 * Minutes
 * Goals
 * Assists
+* Non-Penalty Goals
+
+### Season Statistics (MVP 2 — Deferred, absent from MVP 1 dataset)
+
 * xG
 * xA
 * Pass Completion %

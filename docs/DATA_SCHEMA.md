@@ -1,8 +1,16 @@
 # Football Intelligence — Data Schema
 
-Version: v0.1
+Version: v0.2
 Status: Active
 Scope: MVP 1 — AI Player Profile Generator
+
+Revision Note:
+
+v0.2 is based on direct inspection of players_data_raw_2025_26.csv.
+Advanced stat columns (xG, xAG, npxG, progressive_passes, progressive_carries,
+pass_completion_pct) are absent from the downloaded file and are deferred to MVP 2.
+Preferred Foot is also deferred (Decision 012). Player ID is absent (Decision 014).
+The MVP 1 schema is reduced from 19 fields to 12 confirmed fields.
 
 ---
 
@@ -10,7 +18,7 @@ Scope: MVP 1 — AI Player Profile Generator
 
 ## Source
 
-FBref Big 5 European Leagues
+FBref via Kaggle dataset by hubertsidorowicz
 
 ## Season
 
@@ -24,90 +32,77 @@ FBref Big 5 European Leagues
 - Serie A (Italy)
 - Ligue 1 (France)
 
-## File Location
+## File Locations
 
 ```
-data/players.csv
+data/raw/players_data_raw_2025_26.csv   ← source file (do not modify)
+data/players.csv                         ← cleaned output
 ```
 
-## Structure
+## Confirmed Structure
 
-- One row per player
-- Estimated row count: 2,500 — 3,000 players
-- Total columns: 19
+- Data rows: 2,839
+- Total columns in raw file: 102
+- Header rows: 1 (ETL pipeline has pre-resolved FBref's two-row header)
 - Encoding: UTF-8
 - Delimiter: comma
 
-## Source Tables
-
-Player data is sourced and merged from four FBref stat category tables:
-
-| FBref Table | Columns Contributed |
-|---|---|
-| Standard Stats | player_id, player_name, nationality, position, club, competition, age, appearances, minutes_played, goals, assists, non_penalty_goals |
-| Shooting | xg, non_penalty_xg |
-| Passing | xa, pass_completion_pct, progressive_passes |
-| Possession | progressive_carries |
-
-Merge key: `player_id`
-
 ---
 
-# 2. Field Definitions
+# 2. MVP 1 Field Definitions
 
-## player_id
-
-Unique player identifier extracted from the FBref player URL.
-
-Example: `e342ad68`
-
-Used as the primary key for all lookups, merges, and cross-references.
-
----
+These 12 fields are confirmed present in players_data_raw_2025_26.csv
+and form the complete MVP 1 cleaned dataset.
 
 ## player_name
 
-Full display name of the player as listed on FBref.
+Full display name of the player as listed in the dataset.
 
-Example: `Son Heung-min`
+Raw column: `Player`
+
+Example: `Brenden Aaronson`
 
 ---
 
 ## season
 
-The football season the statistics belong to.
+The football season this record belongs to. Not a column in the raw file.
+Added as a constant during cleaning.
 
-Fixed value for MVP 1: `2025-26`
+Raw column: none — hardcoded as `2025-26`
 
 ---
 
 ## nationality
 
-The player's country of nationality.
+The player's country of nationality, stored as a full country name in English.
 
-Stored as full country name in English.
+Raw column: `Nation`
 
-Example: `South Korea`
-
-FBref provides a 3-letter country code (e.g. `KOR`). This is expanded to the full country name during cleaning.
+The raw format is `{2-letter lowercase flag code} {3-letter uppercase country code}`
+(e.g. `us USA`, `eng ENG`, `ma MAR`). The 3-letter code is extracted and expanded
+to a full country name during cleaning. See Section 8 for the normalisation rule.
 
 ---
 
 ## position
 
-The player's primary position.
+The player's primary position, normalised to one of four values: `GK`, `DF`, `MF`, `FW`
 
-Normalised to one of four values: `GK`, `DF`, `MF`, `FW`
+Raw column: `Pos`
 
-FBref may return compound positions (e.g. `MF,FW`). The first listed position is used as the primary position.
+The raw column may contain compound positions (e.g. `MF,FW`, `DF,MF`).
+The first listed position is used as the primary position.
 
 ---
 
 ## club
 
-The player's current club as of the 2024-25 season.
+The player's club for the 2025-26 season.
 
-Example: `Tottenham Hotspur`
+Raw column: `Squad`
+
+Example: `Leeds United`
 
 ---
 
@@ -115,43 +110,52 @@ Example: `Tottenham Hotspur`
 
 The top-flight league the player's club competes in.
 
-Example: `Premier League`
+Raw column: `Comp`
+
+The raw format is `{country_code} {league_name}` (e.g. `eng Premier League`).
+The country prefix is stripped during cleaning.
 
 ---
 
 ## age
 
-The player's age as of the 2024-25 season.
+The player's age during the 2025-26 season, stored as an integer.
 
-Stored as an integer. FBref may provide age in `YY-DDD` format. This is converted to integer years during cleaning.
+Raw column: `Age`
+
+The raw column is a decimal float (e.g. `24.0`). Converted to integer during cleaning.
 
 ---
 
 ## appearances
 
-Total number of matches the player appeared in during the 2024-25 season.
+Total number of matches the player appeared in during 2025-26.
 
-Sourced from the `MP` column in FBref Standard Stats.
+Raw column: `MP`
 
 ---
 
 ## minutes_played
 
-Total minutes played across all appearances in the 2024-25 season.
+Total minutes played across all appearances in 2025-26.
+
+Raw column: `Min`
 
 ---
 
 ## goals
 
-Total goals scored during the 2024-25 season.
+Total goals scored during 2025-26. Includes penalty goals.
 
-Includes penalty goals.
+Raw column: `Gls`
 
 ---
 
 ## assists
 
-Total assists registered during the 2024-25 season.
+Total assists registered during 2025-26.
+
+Raw column: `Ast`
 
 ---
 
@@ -159,91 +163,102 @@ Total assists registered during the 2024-25 season.
 
 Total goals scored excluding penalties.
 
-Used for percentile calculations and AI analysis to separate open-play goal threat from penalty conversion.
+Used in analytics and AI analysis to separate open-play goal threat from
+penalty conversion.
+
+Raw column: `G-PK`
 
 ---
 
-## xg
+# 3. MVP 2 Deferred Fields
 
-Expected Goals. The sum of shot quality values for all shots taken in the 2024-25 season.
+The following fields were specified in the original MVP 1 schema but are absent
+from players_data_raw_2025_26.csv. They are deferred to MVP 2.
 
-Represents the probability-weighted number of goals a player was expected to score based on shot location and type.
+| Schema Field | Expected Raw Column | Confirmed Status | Reason Deferred |
+|---|---|---|---|
+| xg | xG | ABSENT | Not in downloaded file |
+| non_penalty_xg | npxG | ABSENT | Not in downloaded file |
+| xa | xAG | ABSENT | Not in downloaded file |
+| pass_completion_pct | Cmp% | ABSENT | Not in downloaded file |
+| progressive_passes | PrgP | ABSENT | Not in downloaded file |
+| progressive_carries | PrgC | ABSENT | Not in downloaded file |
+| preferred_foot | n/a | N/A | Not available in FBref — Decision 012 |
+| player_id | n/a | ABSENT | Not captured by dataset ETL — Decision 014 |
 
----
-
-## non_penalty_xg
-
-Expected Goals excluding penalties.
-
-Used in analytics and AI analysis to evaluate open-play goal threat independently of penalty situations.
-
----
-
-## xa
-
-Expected Assisted Goals (xAG). Sourced from the `xAG` column in FBref Passing.
-
-Represents the expected goals value of passes that led directly to a shot. A chance-creation quality metric.
+MVP 2 will evaluate a dataset source that includes these columns (the full
+250+ column version of the Kaggle file, or a direct FBref export).
 
 ---
 
-## pass_completion_pct
+# 4. Raw Column to Schema Mapping
 
-Percentage of attempted passes that were successfully completed.
+## MVP 1 Column Map
 
-Stored as a float. Example: `84.3`
+| Raw Column | Schema Field | Transformation Required |
+|---|---|---|
+| `Player` | player_name | None |
+| — | season | Hardcode `2025-26` |
+| `Nation` | nationality | Extract 3-letter code → expand to full country name |
+| `Pos` | position | Take first value → normalise to GK / DF / MF / FW |
+| `Squad` | club | None |
+| `Comp` | competition | Strip country prefix |
+| `Age` | age | Convert float to integer |
+| `MP` | appearances | Cast to integer |
+| `Min` | minutes_played | Cast to integer |
+| `Gls` | goals | Cast to integer |
+| `Ast` | assists | Cast to integer |
+| `G-PK` | non_penalty_goals | Cast to integer |
+
+## Columns Excluded from MVP 1
+
+The raw file contains 102 columns. 90 are excluded. Key exclusion groups:
+
+| Group | Raw Columns | Reason |
+|---|---|---|
+| Suffixed join artefacts | `Rk_stats_*`, `Nation_stats_*`, `Pos_stats_*`, `Age_stats_*`, `Born_stats_*`, `90s_stats_*`, `Comp_stats_*`, etc. | Duplicate identity columns from multi-table merge |
+| Goalkeeper stats | `GA`, `GA90`, `SoTA`, `Saves`, `Save%`, `W`, `D`, `L`, `CS`, `CS%`, `PKA`, `PKsv`, `PKm` | Outfield player scope only |
+| Shooting volume | `Sh`, `SoT`, `SoT%`, `Sh/90`, `SoT/90`, `G/Sh`, `G/SoT` | Not in MVP 1 spec |
+| Penalty detail | `PK`, `PKatt` | Not in MVP 1 spec |
+| Disciplinary | `CrdY`, `CrdR`, `2CrdY` | Not in MVP 1 spec |
+| Derived totals | `G+A`, `G+A-PK`, `90s` | Derivable from retained fields |
+| Playing time detail | `Starts`, `Mn/MP`, `Min%`, `Mn/Start`, `Compl`, `Subs`, `Mn/Sub`, `unSub` | Not in MVP 1 spec |
+| Team context | `PPM`, `onG`, `onGA`, `+/-`, `+/-90`, `On-Off` | Not in MVP 1 spec |
+| Miscellaneous | `Fls`, `Fld`, `Off`, `Crs`, `Int`, `TklW`, `OG` | Not in MVP 1 spec |
+| Birth year | `Born` | Age already retained |
+| Row rank | `Rk` | No analytical value |
 
 ---
 
-## progressive_passes
-
-Number of passes that moved the ball at least 10 yards closer to the opponent's goal, or any completed pass into the penalty area.
-
----
-
-## progressive_carries
-
-Number of carries that moved the ball at least 5 yards closer to the opponent's goal, or any carry into the penalty area.
-
----
-
-# 3. Data Types
+# 5. Data Types
 
 | Column | Type | Format |
 |---|---|---|
-| player_id | string | Alphanumeric, 8 characters |
 | player_name | string | UTF-8 text |
-| season | string | `YYYY-YY` |
+| season | string | `YYYY-YY` — fixed value `2025-26` |
 | nationality | string | Full country name in English |
 | position | string | Enum: `GK`, `DF`, `MF`, `FW` |
 | club | string | UTF-8 text |
-| competition | string | UTF-8 text |
+| competition | string | Full league name in English |
 | age | integer | Whole number |
 | appearances | integer | Whole number |
 | minutes_played | integer | Whole number |
 | goals | integer | Whole number |
 | assists | integer | Whole number |
 | non_penalty_goals | integer | Whole number |
-| xg | float | 2 decimal places |
-| non_penalty_xg | float | 2 decimal places |
-| xa | float | 2 decimal places |
-| pass_completion_pct | float | 1 decimal place |
-| progressive_passes | integer | Whole number |
-| progressive_carries | integer | Whole number |
 
 ---
 
-# 4. Validation Rules
+# 6. Validation Rules
 
 ## Identity
 
-- `player_id` must be unique across the entire dataset. No duplicates permitted.
 - `player_name` must not be null or empty.
-- `player_id` must not be null or empty.
+- `player_name` + `club` is the MVP 1 composite key. No duplicate pairs permitted.
 
 ## Season
 
-- `season` must equal `2025-26` for all rows in the MVP 1 dataset.
+- `season` must equal `2025-26` for all rows.
 
 ## Position
 
@@ -260,42 +275,26 @@ Number of carries that moved the ball at least 5 yards closer to the opponent's 
 
 - `appearances` must be >= 0.
 - `minutes_played` must be >= 0.
-- `minutes_played` must be <= `appearances` × 95. (A player cannot play more than approximately 95 minutes per match.)
+- `minutes_played` must be <= `appearances` × 95.
 - Players with `minutes_played` = 0 are excluded from the dataset.
 
-## Goal and Assist Metrics
+## Goals and Assists
 
 - `goals`, `assists`, `non_penalty_goals` must be >= 0.
 - `non_penalty_goals` must be <= `goals`.
 
-## Expected Metrics
-
-- `xg`, `non_penalty_xg`, `xa` must be >= 0.0.
-- `non_penalty_xg` must be <= `xg`.
-
-## Pass Completion
-
-- `pass_completion_pct` must be between 0.0 and 100.0 inclusive.
-
-## Progressive Actions
-
-- `progressive_passes`, `progressive_carries` must be >= 0.
-
 ---
 
-# 5. Missing Value Policy
+# 7. Missing Value Policy
 
 ## Minimum Playing Time Threshold
 
-Players with fewer than **90 minutes played** are excluded from the dataset entirely.
-
-Rationale: statistical metrics are unreliable and misleading for players with very limited appearances. A player with 1 appearance and 1 goal produces distorted percentile values.
+Players with fewer than **90 minutes played** are excluded from the dataset.
 
 ## Field-Level Policy
 
 | Column | Null Permitted | Action if Null |
 |---|---|---|
-| player_id | No | Exclude row |
 | player_name | No | Exclude row |
 | season | No | Exclude row |
 | nationality | Yes | Store as `Unknown` |
@@ -308,133 +307,149 @@ Rationale: statistical metrics are unreliable and misleading for players with ve
 | goals | No | Default to `0` |
 | assists | No | Default to `0` |
 | non_penalty_goals | No | Default to `0` |
-| xg | Yes | Default to `0.00` |
-| non_penalty_xg | Yes | Default to `0.00` |
-| xa | Yes | Default to `0.00` |
-| pass_completion_pct | Yes | Store as null; exclude from pass-based percentiles |
-| progressive_passes | Yes | Default to `0` |
-| progressive_carries | Yes | Default to `0` |
-
-## Notes
-
-- xG and xA may be null for some FBref entries (particularly older or lower-profile competitions). Default to `0.00` rather than excluding the player.
-- `pass_completion_pct` may be null for players who rarely pass (e.g. some forwards). Null is preserved rather than defaulting to `0`, to avoid distorting completion percentiles.
-- Goalkeepers are retained in the dataset but excluded from outfield-player percentile calculations in the analytics layer.
 
 ---
 
-# 6. Data Normalization Rules
+# 8. Data Normalization Rules
 
 ## Player Names
 
-- Stored in original UTF-8 encoding. Accented characters are preserved (e.g. `Vinícius Júnior`, `Kylian Mbappé`).
-- Leading and trailing whitespace is stripped.
-- No case conversion applied. Names are stored as they appear on FBref.
+- Stored in original UTF-8 encoding. Accented characters preserved.
+- Leading and trailing whitespace stripped.
+- No case conversion applied.
 
 ## Nationality
 
-FBref provides 3-letter IOC country codes (e.g. `ENG`, `KOR`, `BRA`). These are expanded to full country names in English during cleaning.
+The raw `Nation` column uses the format `{2-letter lowercase flag code} {3-letter uppercase country code}`.
 
-Examples:
-- `ENG` → `England`
-- `KOR` → `South Korea`
-- `BRA` → `Brazil`
-- `FRA` → `France`
+Confirmed examples from the dataset:
+
+| Raw Value | Extracted Code | Stored As |
+|---|---|---|
+| `us USA` | USA | United States |
+| `eng ENG` | ENG | England |
+| `ma MAR` | MAR | Morocco |
+| `dz ALG` | ALG | Algeria |
+| `fr FRA` | FRA | France |
+| `de GER` | GER | Germany |
+| `es ESP` | ESP | Spain |
+| `br BRA` | BRA | Brazil |
+| `pt POR` | POR | Portugal |
+| `ar ARG` | ARG | Argentina |
+
+Cleaning rule: split on space, take the second token, map to full country name.
 
 ## Position
 
-FBref may provide compound positions (e.g. `MF,FW`, `DF,MF`). Normalisation rule:
+Raw `Pos` column may contain compound values. Confirmed formats in dataset:
 
-- Take the first listed position only.
-- Map to the standard four-value enum.
+| Raw Value | Stored As |
+|---|---|
+| `GK` | GK |
+| `DF` | DF |
+| `MF` | MF |
+| `FW` | FW |
+| `MF,FW` | MF |
+| `DF,MF` | DF |
+| `FW,MF` | FW |
+| `MF,DF` | MF |
+| `DF,FW` | DF |
 
-Mapping:
-- `GK` → `GK`
-- `DF` → `DF`
-- `MF` → `MF`
-- `FW` → `FW`
-- `MF,FW` → `MF`
-- `DF,MF` → `DF`
-- `FW,MF` → `FW`
+Rule: split on comma, take the first token.
 
 ## Competition Names
 
-FBref competition identifiers are mapped to full league names:
+Raw `Comp` column uses the format `{country_code} {league_name}`.
 
-| FBref Value | Stored As |
+| Raw Value | Stored As |
 |---|---|
-| `eng Premier League` | `Premier League` |
-| `es La Liga` | `La Liga` |
-| `de Bundesliga` | `Bundesliga` |
-| `it Serie A` | `Serie A` |
-| `fr Ligue 1` | `Ligue 1` |
+| `eng Premier League` | Premier League |
+| `es La Liga` | La Liga |
+| `de Bundesliga` | Bundesliga |
+| `it Serie A` | Serie A |
+| `fr Ligue 1` | Ligue 1 |
+
+Rule: strip the first word (country code prefix).
 
 ## Age
 
-FBref may provide age as `YY-DDD` (years and days). This is converted to integer years by taking the year component only.
+Raw `Age` column is a decimal float (e.g. `24.0`, `15.0`).
+Convert to integer by truncating the decimal component.
 
-Example: `28-192` → `28`
-
-## Numeric Rounding
-
-| Column | Rounding |
-|---|---|
-| xg | 2 decimal places |
-| non_penalty_xg | 2 decimal places |
-| xa | 2 decimal places |
-| pass_completion_pct | 1 decimal place |
-
-All integer fields are stored without decimals.
+Example: `24.0` → `24`
 
 ## Duplicate Handling
 
-If a player appears more than once (e.g. transferred mid-season, listed separately per club), the row with the higher `minutes_played` value is retained. The player's club is set to the club they spent more time at.
+If a player appears more than once (e.g. mid-season transfer), retain the row
+with the higher `minutes_played` value.
 
 ---
 
-# 7. Example Record
+# 9. Example Record
 
-The following is an illustrative example record demonstrating the expected structure and value formats.
+Based on confirmed data from Row 1 of players_data_raw_2025_26.csv.
 
+**Raw values:**
 ```
-player_id:            e342ad68
-player_name:          Son Heung-min
-season:               2025-26
-nationality:          South Korea
-position:             FW
-club:                 Tottenham Hotspur
-competition:          Premier League
-age:                  32
-appearances:          34
-minutes_played:       2847
-goals:                14
-assists:              9
-non_penalty_goals:    13
-xg:                   11.40
-non_penalty_xg:       10.20
-xa:                   7.30
-pass_completion_pct:  79.4
-progressive_passes:   68
-progressive_carries:  112
+Player:  Brenden Aaronson
+Nation:  us USA
+Pos:     MF,FW
+Squad:   Leeds United
+Comp:    eng Premier League
+Age:     24.0
+MP:      37
+Min:     2449
+Gls:     4
+Ast:     5
+G-PK:    4
+```
+
+**After cleaning:**
+```
+player_name:        Brenden Aaronson
+season:             2025-26
+nationality:        United States
+position:           MF
+club:               Leeds United
+competition:        Premier League
+age:                24
+appearances:        37
+minutes_played:     2449
+goals:              4
+assists:            5
+non_penalty_goals:  4
 ```
 
 ---
 
-# Known Gap
+# 10. Known Gaps
 
-**Preferred Foot** was specified as a player profile field in `PROJECT_MASTER.md` and `ROADMAP.md` but is not available in FBref standard data exports. It is intentionally excluded from the MVP 1 dataset schema.
+## player_id
 
-This field will be revisited in MVP 2 when Transfermarkt is introduced as a supplementary data source. The gap is recorded in `DECISIONS.md`.
+Not present in the dataset. The ETL pipeline merges source tables using
+`player_name + club` only. No FBref player URL or ID is produced.
+
+Composite key for MVP 1: `player_name + club + season` (per Decision 014).
+
+## Advanced Statistics
+
+xG, npxG, xAG, Cmp%, PrgP, and PrgC are absent from players_data_raw_2025_26.csv.
+These fields are deferred to MVP 2. A dataset containing these columns will be
+sourced for MVP 2 (full Kaggle file or direct FBref export).
+
+## Preferred Foot
+
+Not available in FBref data. Deferred to MVP 2 via Transfermarkt integration
+(Decision 012).
 
 ---
 
 # Document References
 
-- `docs/PROJECT_MASTER.md` — field requirements (Section 8)
 - `docs/ROADMAP.md` — MVP 1 feature specification
 - `docs/MVP1_IMPLEMENTATION_PLAN.md` — Phase 1 deliverable definition
-- `docs/DATA_SOURCES.md` — FBref source selection and risk register
-- `docs/DECISIONS.md` — Decision 011 (static dataset strategy)
+- `docs/DATA_SOURCES.md` — data source selection and inspection findings
+- `docs/DECISIONS.md` — Decision 011, 012, 013, 014
 
 ---
 

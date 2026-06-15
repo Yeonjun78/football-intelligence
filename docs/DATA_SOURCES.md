@@ -59,7 +59,37 @@ See Decision 014.
 
 ## Status
 
-Primary Data Source
+Primary Data Source — Downloaded and Inspected
+
+## Confirmed File Structure
+
+Data rows: 2,839
+Total columns: 102
+Header rows: 1 (ETL pipeline pre-resolved FBref two-row header)
+
+## Confirmed Present (MVP 1)
+
+* Player (player_name)
+* Nation (nationality)
+* Pos (position)
+* Squad (club)
+* Comp (competition)
+* Age (age)
+* MP (appearances)
+* Min (minutes_played)
+* Gls (goals)
+* Ast (assists)
+* G-PK (non_penalty_goals)
+
+## Confirmed Absent (MVP 2 Deferred)
+
+* xG — not in file
+* npxG — not in file
+* xAG — not in file
+* Cmp% — not in file
+* PrgP — not in file
+* PrgC — not in file
+* player_id — not captured by ETL pipeline
 
 ## Reason
 
@@ -67,15 +97,15 @@ FBref provides:
 
 * Player Information
 * Season Statistics
-* Advanced Statistics
 * League Coverage
 * Historical Data
 
-Suitable for:
+Suitable for MVP 1:
 
 * Player Profiles
-* Player Comparison
-* Basic Analytics
+* Player Search
+* Basic Season Statistics
+* AI Analysis
 
 ---
 
