@@ -4,11 +4,17 @@ AI Player Profile Generator — CLI entry point.
 """
 
 import sys
-from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).resolve().parent))
-from player_search import load_players, search
-from profile_generator import generate_profile, print_profile
+try:
+    from analytics.player_search import load_players, search                          # package import
+    from analytics.profile_generator import generate_profile, print_profile, PlayerProfile
+except ImportError:
+    from player_search import load_players, search                                    # direct execution
+    from profile_generator import generate_profile, print_profile, PlayerProfile
+
+
+class PlayerNotFoundError(Exception):
+    """Raised when no players match the search query."""
 
 BANNER = """
 ╔══════════════════════════════════════════════════════╗
@@ -45,18 +51,19 @@ def _pick_player(results):
     return results.iloc[max(0, min(idx, len(results) - 1))]
 
 
-def run(query: str | None = None) -> None:
+def run(query: str | None = None) -> "PlayerProfile":
     """
     Main application flow. Accepts an optional query string for non-interactive use.
     If query is None, prompts the user interactively.
+
+    Raises:
+        FileNotFoundError:    cleaned dataset is missing — run prepare_data.py first.
+        ValueError:           empty query string provided.
+        PlayerNotFoundError:  no players match the query.
     """
     print(BANNER)
 
-    try:
-        df = load_players()
-    except FileNotFoundError as e:
-        print(f"Error: {e}")
-        sys.exit(1)
+    df = load_players()  # raises FileNotFoundError if dataset is missing
 
     print(f"  Dataset loaded: {len(df):,} players across 5 leagues.\n")
 
@@ -64,24 +71,33 @@ def run(query: str | None = None) -> None:
         query = _prompt_query()
 
     if not query:
-        print("No search query entered.")
-        sys.exit(1)
+        raise ValueError("No search query provided.")
 
     results = search(df, query)
 
     if results.empty:
-        print(f"\n  No players found matching '{query}'.")
-        print("  Try a partial name (e.g. 'Kane' instead of 'Harry Kane') or check spelling.\n")
-        sys.exit(0)
+        raise PlayerNotFoundError(query)
 
     player_row = _pick_player(results)
     profile = generate_profile(player_row, df)
     print_profile(profile)
+    return profile
 
 
 def main() -> None:
     query = " ".join(sys.argv[1:]) if len(sys.argv) > 1 else None
-    run(query)
+    try:
+        run(query)
+    except FileNotFoundError as e:
+        print(f"Error: {e}")
+        sys.exit(1)
+    except PlayerNotFoundError as e:
+        print(f"\n  No players found matching '{e}'.")
+        print("  Try a partial name (e.g. 'Kane' instead of 'Harry Kane') or check spelling.\n")
+        sys.exit(0)
+    except ValueError as e:
+        print(str(e))
+        sys.exit(1)
 
 
 if __name__ == "__main__":

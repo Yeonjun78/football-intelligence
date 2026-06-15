@@ -6,12 +6,13 @@ No AI API calls. Analysis is derived entirely from cleaned statistical data.
 
 import sys
 from dataclasses import dataclass
-from pathlib import Path
 
 import pandas as pd
 
-sys.path.insert(0, str(Path(__file__).resolve().parent))
-from player_search import load_players, search  # noqa: E402
+try:
+    from .player_search import load_players, search        # package import (FastAPI)
+except ImportError:
+    from player_search import load_players, search         # direct execution fallback
 
 # Percentile thresholds for strength / weakness classification
 STRENGTH_THRESHOLD = 75   # >= 75th percentile within position group → strength
@@ -60,11 +61,19 @@ def _add_rate_cols(df: pd.DataFrame) -> pd.DataFrame:
 
 
 def _pct_rank(value: float, series: pd.Series) -> float:
-    """Percentile rank (0-100) of value within series. Handles NaN gracefully."""
+    """Percentile rank (0-100) using the midpoint method for tied values.
+
+    Strict less-than assigns the bottom of any tie cluster; midpoint assigns the
+    centre, which is the standard scipy.stats.percentileofscore('average') behaviour.
+    This matters wherever many players share the same value (e.g. GK minutes_share=1.0,
+    players with 0 goals).
+    """
     valid = series.dropna()
     if not valid.size:
         return 50.0
-    return float((valid < value).sum() / len(valid) * 100)
+    below = (valid < value).sum()
+    equal = (valid == value).sum()
+    return float((below + equal / 2) / len(valid) * 100)
 
 
 def _percentiles(player_row: pd.Series, peer_df: pd.DataFrame) -> dict[str, float]:
@@ -163,6 +172,12 @@ def _strengths(row: pd.Series, pct: dict[str, float]) -> list[str]:
         # Penalty conversion only if it's a meaningful part of the output
         if goals >= 5 and pen >= 4 and pen / goals >= 0.25:
             out.append("Penalty conversion")
+
+    if pos == "DF":
+        if pct["goals_p90"] >= ELITE_THRESHOLD:
+            out.append("Elite goal threat from set pieces")
+        elif pct["goals_p90"] >= STRENGTH_THRESHOLD:
+            out.append("Goal threat from set pieces")
 
     # Availability: GK/DF use 65th-percentile threshold (not 75th) because
     # appearances is their only available metric in this 12-column dataset.
