@@ -343,9 +343,18 @@ Expected Benefits:
 
 Date: 2026-06-15
 
-Status: Accepted
+Status: Superseded by Decision 014
 
 Category: Data Engineering
+
+Note:
+
+The original plan was to obtain the MVP 1 dataset via manual CSV export directly
+from FBref. After further evaluation, a community-maintained Kaggle dataset sourced
+from FBref was identified as a more practical and maintainable alternative. It
+eliminates manual per-table export steps, provides a pre-merged file covering all
+required statistics, and is already in use across the football analytics community.
+This decision is retained for historical record only. See Decision 014.
 
 Decision:
 
@@ -371,6 +380,65 @@ Future Plan:
 MVP 1: Manual export
 MVP 2: Manual refresh
 MVP 3: Automated ingestion pipeline
+
+---
+
+# Decision 014
+
+Date: 2026-06-15
+
+Status: Accepted
+
+Category: Data Engineering
+
+Decision:
+
+MVP 1 will use the following Kaggle dataset as the static player data source:
+
+Dataset: Football Players Stats (2025-2026)
+Maintainer: hubertsidorowicz
+URL: https://www.kaggle.com/datasets/hubertsidorowicz/football-players-stats-2025-2026
+File: players_data-2025_2026.csv
+Stored at: data/raw/players_data_raw_2025_26.csv
+
+The file is downloaded once and committed to the repository.
+It is not re-downloaded during MVP 1 development.
+
+Reason:
+
+This dataset satisfies all MVP 1 requirements simultaneously:
+
+* FBref is the original data source — authoritative
+* Covers Big 5 European Leagues — confirmed
+* Season 2025-26 — confirmed and current
+* All required DATA_SCHEMA.md fields are present in a single pre-merged file
+* Free, no API key required
+* No scraping by this project — consistent with Decision 011
+* Community-tested (Kaggle usability score 10.0)
+
+This supersedes Decision 013. Manual FBref CSV export is eliminated for MVP 1.
+
+Season Note:
+
+This decision updates the target season from 2024-25 (referenced in Decision 013
+and original DATA_SCHEMA.md) to 2025-26. DATA_SCHEMA.md and DATA_SOURCES.md
+are updated accordingly.
+
+Known Limitation:
+
+FBref player_id is not confirmed to be present in the Kaggle dataset.
+
+If player_id is absent after inspection:
+
+* Use player_name + club + season as the composite key for MVP 1
+* Address player_id in MVP 2 when the data source is revisited
+
+Future Plan:
+
+MVP 1: Kaggle static download (this decision)
+MVP 2: Evaluate direct FBref CSV export or dataset refresh process
+MVP 3: Automated data ingestion layer
+
 ---
 
 END OF DOCUMENT

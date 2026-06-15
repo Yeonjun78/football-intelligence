@@ -41,7 +41,21 @@ Advanced Analytics Data Source
 
 ## Selected Source
 
-FBref
+FBref (via Kaggle dataset)
+
+## Season
+
+2025-26
+
+## Acquisition Method
+
+Kaggle dataset by hubertsidorowicz:
+Football Players Stats (2025-2026)
+
+File downloaded once and stored as a static file at:
+data/raw/players_data_raw_2025_26.csv
+
+See Decision 014.
 
 ## Status
 
@@ -152,7 +166,7 @@ Future supplementary source
 
 ## MVP 1
 
-FBref
+FBref — Season 2025-26 (Kaggle static dataset, Decision 014)
 
 ---
 

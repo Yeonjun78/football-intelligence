@@ -14,7 +14,7 @@ FBref Big 5 European Leagues
 
 ## Season
 
-2024-25
+2025-26
 
 ## Leagues Covered
 
@@ -77,7 +77,7 @@ Example: `Son Heung-min`
 
 The football season the statistics belong to.
 
-Fixed value for MVP 1: `2024-25`
+Fixed value for MVP 1: `2025-26`
 
 ---
 
@@ -243,7 +243,7 @@ Number of carries that moved the ball at least 5 yards closer to the opponent's 
 
 ## Season
 
-- `season` must equal `2024-25` for all rows in the MVP 1 dataset.
+- `season` must equal `2025-26` for all rows in the MVP 1 dataset.
 
 ## Position
 
@@ -399,7 +399,7 @@ The following is an illustrative example record demonstrating the expected struc
 ```
 player_id:            e342ad68
 player_name:          Son Heung-min
-season:               2024-25
+season:               2025-26
 nationality:          South Korea
 position:             FW
 club:                 Tottenham Hotspur
