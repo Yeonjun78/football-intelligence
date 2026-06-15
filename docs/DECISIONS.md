@@ -297,6 +297,48 @@ Expected Benefits:
 * Better learning ROI
 * Reduced infrastructure requirements
 
+# Decision 012
+
+Date: 2026-06-15
+
+Status: Accepted
+
+Category: Data
+
+Decision:
+
+Preferred Foot remains part of the MVP 1 player profile specification.
+
+However, the field may be unavailable in the initial MVP 1 dataset.
+
+Reason:
+
+FBref does not provide Preferred Foot in its standard exported datasets.
+
+Removing the field from the specification would create future compatibility issues when additional data providers are introduced.
+
+Future Plan:
+
+MVP 1:
+
+* Preferred Foot may be null
+* Preferred Foot may display as "Unknown"
+
+MVP 2+:
+
+* Integrate Transfermarkt or other supplementary sources
+* Populate Preferred Foot when available
+
+Impact:
+
+The player profile structure remains stable while allowing gradual data enrichment.
+
+Expected Benefits:
+
+* Avoids schema changes later
+* Maintains roadmap consistency
+* Supports future Transfermarkt integration
+
 
 ---
 
