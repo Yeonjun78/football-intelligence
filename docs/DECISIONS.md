@@ -243,6 +243,61 @@ Reason:
 
 Reduce architectural mistakes and scope creep.
 
+# Decision 011
+
+Date: 2026-06-15
+
+Status: Accepted
+
+Category: Data Engineering
+
+Decision:
+
+MVP 1 will use a static FBref-based dataset as the primary data source.
+
+The project will not implement automated scraping or a live ingestion pipeline during MVP 1.
+
+Reason:
+
+The primary objective of MVP 1 is to build and validate the AI Player Profile Generator.
+
+Building a production-grade data ingestion pipeline would significantly increase complexity and delay delivery.
+
+Using a curated FBref dataset allows the project to focus on:
+
+* Player Search
+* Player Profiles
+* Season Statistics
+* AI Analysis
+* Similar Player Recommendations
+
+Future Plan:
+
+MVP 1:
+Static Dataset
+
+MVP 2:
+Dataset Refresh Process
+
+MVP 3:
+Automated Data Ingestion Layer
+
+Long-Term:
+Multi-source football data platform integrating:
+
+* FBref
+* StatsBomb
+* Transfermarkt
+
+Expected Benefits:
+
+* Faster MVP delivery
+* Lower technical complexity
+* Easier debugging
+* Better learning ROI
+* Reduced infrastructure requirements
+
+
 ---
 
 END OF DOCUMENT
