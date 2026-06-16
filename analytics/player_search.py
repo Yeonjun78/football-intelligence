@@ -5,6 +5,7 @@ Loads the cleaned player dataset and provides exact and partial name search.
 
 import logging
 import sys
+import unicodedata
 from pathlib import Path
 
 import pandas as pd
@@ -28,6 +29,16 @@ DISPLAY_COLUMNS = [
 ]
 
 
+def _normalize(text: str) -> str:
+    """Lowercase + strip accent marks via NFD decomposition."""
+    return (
+        unicodedata.normalize("NFD", text)
+        .encode("ascii", "ignore")
+        .decode("ascii")
+        .lower()
+    )
+
+
 def load_players(path: Path = PROCESSED_FILE) -> pd.DataFrame:
     if not path.exists():
         raise FileNotFoundError(
@@ -38,18 +49,21 @@ def load_players(path: Path = PROCESSED_FILE) -> pd.DataFrame:
     int_cols = ["age", "appearances", "minutes_played", "goals", "assists", "non_penalty_goals"]
     for col in int_cols:
         df[col] = pd.to_numeric(df[col], errors="coerce").astype("Int64")
+    df["_name_key"] = df["player_name"].fillna("").apply(_normalize)
     return df
 
 
 def search_exact(df: pd.DataFrame, name: str) -> pd.DataFrame:
-    """Return rows where player_name matches exactly (case-insensitive)."""
-    mask = df["player_name"].str.lower() == name.strip().lower()
+    """Return rows where player_name matches exactly (case- and accent-insensitive)."""
+    key = _normalize(name.strip())
+    mask = df["_name_key"] == key
     return df[mask][DISPLAY_COLUMNS].reset_index(drop=True)
 
 
 def search_partial(df: pd.DataFrame, query: str) -> pd.DataFrame:
-    """Return rows where player_name contains the query string (case-insensitive)."""
-    mask = df["player_name"].str.contains(query.strip(), case=False, na=False, regex=False)
+    """Return rows where player_name contains the query string (case- and accent-insensitive)."""
+    key = _normalize(query.strip())
+    mask = df["_name_key"].str.contains(key, na=False, regex=False)
     return df[mask][DISPLAY_COLUMNS].reset_index(drop=True)
 
 
