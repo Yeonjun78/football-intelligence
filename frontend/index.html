@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Football Intelligence — Player Leaderboard" />
+  <title>Leaderboard — Football Intelligence</title>
+  <link rel="stylesheet" href="/css/styles.css" />
+</head>
+<body>
+
+  <nav id="nav-root" aria-label="Main navigation"></nav>
+
+  <main id="main-content">
+    <div class="page-header">
+      <h1>Leaderboard</h1>
+      <p>Browse and filter all players in the dataset. Click a name to view their profile.</p>
+    </div>
+
+    <!-- Phase 2 will replace this placeholder with the filter bar,
+         sortable table, and scatter chart. -->
+    <section
+      id="leaderboard-container"
+      class="placeholder-section"
+      aria-label="Leaderboard placeholder"
+    >
+      <span class="placeholder-label">Phase 2</span>
+      <p class="placeholder-title">Player Leaderboard</p>
+      <p class="placeholder-desc">
+        Sortable table with position filter, competition filter, min-appearances
+        slider, and Goals/90 vs Assists/90 scatter chart — coming in Phase 2.
+      </p>
+    </section>
+  </main>
+
+  <script src="/js/api.js"></script>
+  <script src="/js/nav.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      initNav();
+    });
+  </script>
+
+</body>
+</html>

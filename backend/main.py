@@ -10,6 +10,7 @@ from backend.routers.players import router as players_router
 from backend.routers.compare import router as compare_router
 from backend.routers.leaderboard import router as leaderboard_router
 from backend.services.player_service import make_player_id
+from fastapi.staticfiles import StaticFiles
 
 
 logger = logging.getLogger(__name__)
@@ -67,3 +68,5 @@ def health(request: Request):
 async def unhandled_exception_handler(request: Request, exc: Exception):
     logger.exception("Unhandled error on %s", request.url)
     return JSONResponse(status_code=500, content={"detail": "Internal server error."})
+
+app.mount("/", StaticFiles(directory="frontend", html=True), name="static")

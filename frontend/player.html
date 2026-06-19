@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Football Intelligence — Player Profile" />
+  <title>Player Profile — Football Intelligence</title>
+  <link rel="stylesheet" href="/css/styles.css" />
+</head>
+<body>
+
+  <nav id="nav-root" aria-label="Main navigation"></nav>
+
+  <main id="main-content">
+    <a class="back-link" href="/">&#8592; Back to Leaderboard</a>
+
+    <!-- Error state: shown when ?id is missing or lookup fails (Phase 3) -->
+    <div id="player-error" class="banner banner--error" hidden></div>
+
+    <!-- Phase 3 will replace this placeholder with the full profile card:
+         header, stats overview, percentile bars, strengths/weaknesses. -->
+    <section
+      id="profile-container"
+      class="placeholder-section"
+      aria-label="Player profile placeholder"
+    >
+      <span class="placeholder-label">Phase 3</span>
+      <p class="placeholder-title">Player Profile</p>
+      <p id="profile-id-hint" class="placeholder-desc">
+        Percentile bars, strengths &amp; weaknesses, and a compare-with
+        search — coming in Phase 3.
+      </p>
+    </section>
+  </main>
+
+  <script src="/js/api.js"></script>
+  <script src="/js/nav.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      initNav();
+
+      // Read player ID from URL and surface it in the placeholder so
+      // developers can confirm routing works before Phase 3 is built.
+      var params = new URLSearchParams(window.location.search);
+      var id = params.get('id');
+
+      if (!id) {
+        // No ID: redirect to leaderboard rather than showing a blank page.
+        window.location.replace('/');
+        return;
+      }
+
+      var hint = document.getElementById('profile-id-hint');
+      if (hint) {
+        hint.textContent = 'Player ID: ' + id + ' — full profile renders in Phase 3.';
+      }
+
+      // Update page title so browser history shows a useful label.
+      document.title = 'Player ' + id + ' — Football Intelligence';
+    });
+  </script>
+
+</body>
+</html>

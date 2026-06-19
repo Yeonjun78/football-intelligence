@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Football Intelligence — Head-to-Head Comparison" />
+  <title>Head-to-Head — Football Intelligence</title>
+  <link rel="stylesheet" href="/css/styles.css" />
+</head>
+<body>
+
+  <nav id="nav-root" aria-label="Main navigation"></nav>
+
+  <main id="main-content">
+    <a class="back-link" href="/">&#8592; Back to Leaderboard</a>
+
+    <!-- Error state: shown when p1/p2 are missing or the compare call fails (Phase 4) -->
+    <div id="compare-error" class="banner banner--error" hidden></div>
+
+    <!-- Phase 4 will replace this placeholder with the full comparison layout:
+         player headers, data_warning banner, verdict card, metric breakdown,
+         strengths/weaknesses panel, and swap button. -->
+    <section
+      id="compare-container"
+      class="placeholder-section"
+      aria-label="Comparison placeholder"
+    >
+      <span class="placeholder-label">Phase 4</span>
+      <p class="placeholder-title">Head-to-Head Comparison</p>
+      <p id="compare-params-hint" class="placeholder-desc">
+        Metric breakdown, Weighted Advantage Score verdict, and
+        strengths &amp; weaknesses — coming in Phase 4.
+      </p>
+    </section>
+  </main>
+
+  <script src="/js/api.js"></script>
+  <script src="/js/nav.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      initNav();
+
+      // Read both player IDs from URL and surface them in the placeholder
+      // so developers can confirm routing before Phase 4 is built.
+      var params = new URLSearchParams(window.location.search);
+      var p1 = params.get('p1');
+      var p2 = params.get('p2');
+
+      var hint = document.getElementById('compare-params-hint');
+
+      if (!p1 || !p2) {
+        if (hint) {
+          hint.textContent = 'Select two players from the leaderboard or a player profile to begin a comparison.';
+        }
+        return;
+      }
+
+      if (p1 === p2) {
+        var errBanner = document.getElementById('compare-error');
+        if (errBanner) {
+          errBanner.textContent = 'Please select two different players to compare.';
+          errBanner.hidden = false;
+        }
+        return;
+      }
+
+      if (hint) {
+        hint.textContent = 'Player ' + p1 + ' vs Player ' + p2 + ' — full comparison renders in Phase 4.';
+      }
+
+      document.title = 'Compare ' + p1 + ' vs ' + p2 + ' — Football Intelligence';
+    });
+  </script>
+
+</body>
+</html>

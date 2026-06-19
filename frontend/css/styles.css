@@ -1,0 +1,307 @@
+/* ============================================================
+   Football Intelligence — Base Styles
+   Phase 1: shell, navigation, placeholders
+   ============================================================ */
+
+/* --- design tokens ----------------------------------------- */
+:root {
+  /* surface */
+  --bg-page:      #f8fafc;
+  --bg-card:      #ffffff;
+  --bg-nav:       #0f172a;
+  --bg-nav-input: #1e293b;
+
+  /* text */
+  --text-primary:   #0f172a;
+  --text-secondary: #475569;
+  --text-muted:     #94a3b8;
+  --text-nav:       #f1f5f9;
+  --text-nav-logo:  #ffffff;
+
+  /* borders */
+  --border:         #e2e8f0;
+  --border-nav:     #334155;
+
+  /* accent */
+  --accent:         #3b82f6;
+  --accent-hover:   #2563eb;
+
+  /* status */
+  --green:  #10b981;
+  --amber:  #f59e0b;
+  --red:    #ef4444;
+  --pending:#64748b;
+
+  /* sizing */
+  --nav-h:        56px;
+  --max-w:        1280px;
+  --r-sm:         4px;
+  --r-md:         8px;
+
+  /* shadows */
+  --shadow-sm: 0 1px 3px rgba(0,0,0,.10), 0 1px 2px rgba(0,0,0,.07);
+  --shadow-md: 0 4px 6px rgba(0,0,0,.07), 0 2px 4px rgba(0,0,0,.05);
+
+  /* type */
+  --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+               Helvetica, Arial, sans-serif;
+  --font-mono: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+}
+
+/* --- reset -------------------------------------------------- */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { font-size: 16px; -webkit-text-size-adjust: 100%; }
+
+body {
+  font-family: var(--font-sans);
+  background: var(--bg-page);
+  color: var(--text-primary);
+  line-height: 1.5;
+  min-height: 100vh;
+}
+
+a             { color: var(--accent); text-decoration: none; }
+a:hover       { color: var(--accent-hover); text-decoration: underline; }
+ul, ol        { list-style: none; }
+img, svg      { display: block; max-width: 100%; }
+button, input { font-family: inherit; }
+
+/* --- navigation bar ---------------------------------------- */
+#nav-root {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: var(--bg-nav);
+  box-shadow: 0 1px 4px rgba(0,0,0,.35);
+}
+
+.nav-inner {
+  max-width: var(--max-w);
+  margin: 0 auto;
+  height: var(--nav-h);
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.nav-logo {
+  flex-shrink: 0;
+  color: var(--text-nav-logo);
+  font-size: 1.0625rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+  text-decoration: none;
+}
+.nav-logo:hover { color: var(--text-nav); text-decoration: none; }
+
+/* --- search input ------------------------------------------ */
+.nav-search-wrapper {
+  flex: 1;
+  max-width: 460px;
+  position: relative;
+}
+
+.nav-search-input {
+  width: 100%;
+  height: 36px;
+  padding: 0 36px 0 12px;
+  border: 1px solid var(--border-nav);
+  border-radius: var(--r-sm);
+  background: var(--bg-nav-input);
+  color: var(--text-nav);
+  font-size: 0.875rem;
+  outline: none;
+  transition: border-color .15s;
+  /* hide browser's native clear button */
+  -webkit-appearance: none;
+}
+.nav-search-input::placeholder { color: #64748b; }
+.nav-search-input:focus        { border-color: var(--accent); }
+
+/* clear (×) button injected by some browsers */
+.nav-search-input::-webkit-search-cancel-button { display: none; }
+
+/* --- autocomplete dropdown --------------------------------- */
+.nav-dropdown {
+  display: none;
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  box-shadow: var(--shadow-md);
+  z-index: 200;
+  overflow: hidden;
+}
+.nav-dropdown--open { display: block; }
+
+.nav-dropdown-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 8px;
+  padding: 10px 14px;
+  cursor: pointer;
+  transition: background .1s;
+}
+.nav-dropdown-item:hover,
+.nav-dropdown-item--active { background: #f1f5f9; }
+
+.nav-dropdown-name {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.nav-dropdown-meta {
+  flex-shrink: 0;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+.nav-dropdown-empty {
+  padding: 12px 14px;
+  font-size: 0.8125rem;
+  color: var(--text-muted);
+  text-align: center;
+}
+
+/* --- health indicator dot ---------------------------------- */
+.health-dot {
+  flex-shrink: 0;
+  margin-left: auto;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--pending);
+  cursor: default;
+  transition: background .3s;
+}
+.health-dot--ok      { background: var(--green); }
+.health-dot--error   { background: var(--red);   }
+.health-dot--pending { background: var(--pending); }
+
+/* --- page wrapper ------------------------------------------ */
+main {
+  max-width: var(--max-w);
+  margin: 0 auto;
+  padding: 32px 24px 64px;
+}
+
+/* --- page header ------------------------------------------- */
+.page-header {
+  margin-bottom: 28px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--border);
+}
+.page-header h1 {
+  font-size: 1.625rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: -0.02em;
+}
+.page-header p {
+  margin-top: 4px;
+  font-size: 0.9375rem;
+  color: var(--text-secondary);
+}
+
+/* --- back link --------------------------------------------- */
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  margin-bottom: 20px;
+}
+.back-link:hover { color: var(--accent); text-decoration: none; }
+
+/* --- placeholder sections (Phase 1 only) ------------------- */
+.placeholder-section {
+  background: var(--bg-card);
+  border: 2px dashed var(--border);
+  border-radius: var(--r-md);
+  padding: 56px 24px;
+  text-align: center;
+}
+.placeholder-label {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 99px;
+  background: #f1f5f9;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 12px;
+}
+.placeholder-title {
+  font-size: 1.0625rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-bottom: 8px;
+}
+.placeholder-desc {
+  font-size: 0.875rem;
+  color: var(--text-muted);
+  max-width: 380px;
+  margin: 0 auto;
+}
+
+/* --- card -------------------------------------------------- */
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  box-shadow: var(--shadow-sm);
+  padding: 20px 24px;
+}
+
+/* --- banners (used from Phase 3/4 onward) ------------------ */
+.banner {
+  padding: 12px 16px;
+  border-radius: var(--r-md);
+  font-size: 0.875rem;
+  line-height: 1.55;
+  margin-bottom: 16px;
+}
+.banner--warning {
+  background: #fef3c7;
+  border: 1px solid #fcd34d;
+  color: #92400e;
+}
+.banner--error {
+  background: #fee2e2;
+  border: 1px solid #fca5a5;
+  color: #991b1b;
+}
+.banner--info {
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  color: #1e40af;
+}
+
+/* --- utility ----------------------------------------------- */
+.text-muted     { color: var(--text-muted); }
+.text-secondary { color: var(--text-secondary); }
+.font-mono      { font-family: var(--font-mono); font-size: .9em; }
+
+/* visually hidden but accessible */
+.sr-only {
+  position: absolute;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden;
+  clip: rect(0,0,0,0);
+  white-space: nowrap;
+  border: 0;
+}
