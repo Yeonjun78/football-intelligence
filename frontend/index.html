@@ -17,27 +17,88 @@
       <p>Browse and filter all players in the dataset. Click a name to view their profile.</p>
     </div>
 
-    <!-- Phase 2 will replace this placeholder with the filter bar,
-         sortable table, and scatter chart. -->
-    <section
-      id="leaderboard-container"
-      class="placeholder-section"
-      aria-label="Leaderboard placeholder"
-    >
-      <span class="placeholder-label">Phase 2</span>
-      <p class="placeholder-title">Player Leaderboard</p>
-      <p class="placeholder-desc">
-        Sortable table with position filter, competition filter, min-appearances
-        slider, and Goals/90 vs Assists/90 scatter chart — coming in Phase 2.
-      </p>
-    </section>
+    <!-- Filter bar -->
+    <div class="filter-bar" aria-label="Leaderboard filters">
+
+      <div class="filter-group">
+        <span class="filter-label" id="pos-filter-label">Position</span>
+        <div class="position-chips" role="radiogroup" aria-labelledby="pos-filter-label">
+          <button class="chip chip--active" data-position="" aria-pressed="true">All</button>
+          <button class="chip" data-position="FW" aria-pressed="false">FW</button>
+          <button class="chip" data-position="MF" aria-pressed="false">MF</button>
+          <button class="chip" data-position="DF" aria-pressed="false">DF</button>
+          <button class="chip" data-position="GK" aria-pressed="false">GK</button>
+        </div>
+      </div>
+
+      <div class="filter-group">
+        <label class="filter-label" for="competition-select">Competition</label>
+        <select id="competition-select" class="filter-select">
+          <option value="">All competitions</option>
+        </select>
+      </div>
+
+      <div class="filter-group filter-group--slider">
+        <label class="filter-label" for="min-apps-slider">
+          Min. appearances: <span id="min-apps-value">5</span>
+        </label>
+        <input
+          type="range"
+          id="min-apps-slider"
+          class="filter-slider"
+          min="0"
+          max="38"
+          value="5"
+          aria-valuemin="0"
+          aria-valuemax="38"
+          aria-valuenow="5"
+        />
+      </div>
+
+    </div><!-- /.filter-bar -->
+
+    <!-- Status + error -->
+    <div class="lb-toolbar">
+      <span id="lb-status" class="lb-status" aria-live="polite"></span>
+    </div>
+    <div id="lb-error" class="banner banner--error" hidden role="alert"></div>
+
+    <!-- Table -->
+    <div class="lb-table-wrapper">
+      <div id="lb-loading" class="lb-loading" hidden aria-live="polite">Loading players…</div>
+      <table class="lb-table" id="lb-table" aria-label="Player leaderboard">
+        <thead>
+          <tr>
+            <th class="col-rank" scope="col">#</th>
+            <th class="col-player" scope="col">Player</th>
+            <th class="col-club" scope="col">Club</th>
+            <th class="col-pos" scope="col">Pos</th>
+            <th class="col-sortable col-num" data-col="goals_p90" scope="col">G/90 <span class="sort-icon" aria-hidden="true"></span></th>
+            <th class="col-sortable col-num" data-col="assists_p90" scope="col">A/90 <span class="sort-icon" aria-hidden="true"></span></th>
+            <th class="col-sortable col-num" data-col="goals" scope="col">Goals <span class="sort-icon" aria-hidden="true"></span></th>
+            <th class="col-sortable col-num" data-col="appearances" scope="col">Apps <span class="sort-icon" aria-hidden="true"></span></th>
+          </tr>
+        </thead>
+        <tbody id="lb-tbody"></tbody>
+      </table>
+    </div>
+
+    <!-- Pagination -->
+    <div class="lb-pagination">
+      <button id="lb-prev" class="btn btn--sm" disabled>&#8592; Prev</button>
+      <span id="lb-status-page" class="lb-page-info"></span>
+      <button id="lb-next" class="btn btn--sm">Next &#8594;</button>
+    </div>
+
   </main>
 
   <script src="/js/api.js"></script>
   <script src="/js/nav.js"></script>
+  <script src="/js/leaderboard.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', function () {
       initNav();
+      initLeaderboard();
     });
   </script>
 
