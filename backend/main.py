@@ -8,6 +8,7 @@ from analytics.player_search import load_players
 from backend.models.schemas import HealthResponse
 from backend.routers.players import router as players_router
 from backend.routers.compare import router as compare_router
+from backend.routers.leaderboard import router as leaderboard_router
 from backend.services.player_service import make_player_id
 
 
@@ -50,6 +51,11 @@ app = FastAPI(
 app.include_router(players_router, prefix="/api/v1")
 app.include_router(compare_router, prefix="/api/v1")
 
+app.include_router(
+    leaderboard_router,
+    prefix="/api/v1",
+    tags=["leaderboard"]
+)
 
 @app.get("/health", response_model=HealthResponse)
 def health(request: Request):
