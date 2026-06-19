@@ -14,49 +14,106 @@
   <main id="main-content">
     <a class="back-link" href="/">&#8592; Back to Leaderboard</a>
 
-    <!-- Error state: shown when ?id is missing or lookup fails (Phase 3) -->
-    <div id="player-error" class="banner banner--error" hidden></div>
+    <!-- Error state -->
+    <div id="player-error" class="banner banner--error" hidden role="alert"></div>
 
-    <!-- Phase 3 will replace this placeholder with the full profile card:
-         header, stats overview, percentile bars, strengths/weaknesses. -->
-    <section
-      id="profile-container"
-      class="placeholder-section"
-      aria-label="Player profile placeholder"
-    >
-      <span class="placeholder-label">Phase 3</span>
-      <p class="placeholder-title">Player Profile</p>
-      <p id="profile-id-hint" class="placeholder-desc">
-        Percentile bars, strengths &amp; weaknesses, and a compare-with
-        search — coming in Phase 3.
-      </p>
-    </section>
+    <!-- Loading state -->
+    <div id="player-loading" class="pf-loading" aria-live="polite">Loading profile…</div>
+
+    <!-- Profile content — hidden until data is loaded -->
+    <div id="profile-content" hidden>
+
+      <!-- Identity header -->
+      <div class="card pf-header">
+        <div class="pf-identity">
+          <h1 id="pf-name" class="pf-name"></h1>
+          <div class="pf-meta">
+            <span id="pf-club"></span>
+            <span class="pf-sep">·</span>
+            <span id="pf-competition"></span>
+            <span class="pf-sep">·</span>
+            <span id="pf-position"></span>
+            <span class="pf-sep">·</span>
+            <span id="pf-age"></span>
+          </div>
+          <div id="pf-nationality" class="pf-sub"></div>
+        </div>
+      </div>
+
+      <!-- Data warning (small sample) -->
+      <div id="pf-warning" class="banner banner--warning" hidden role="alert"></div>
+
+      <!-- Overview -->
+      <div class="card pf-overview-card">
+        <p id="pf-overview" class="pf-overview-text"></p>
+      </div>
+
+      <!-- Season stats -->
+      <section class="pf-section" aria-label="Season statistics">
+        <h2 class="pf-section-title">Season Statistics</h2>
+        <div id="pf-stats-grid" class="pf-stats-grid"></div>
+      </section>
+
+      <!-- DF / GK attacking-only disclaimer -->
+      <div id="pf-pos-disclaimer" class="banner banner--info" hidden>
+        Defensive metrics (tackles, interceptions, clearances) are not available
+        in the current dataset. Statistics shown reflect attacking output only.
+      </div>
+
+      <!-- Strengths & Weaknesses -->
+      <section class="pf-section pf-sw-section" aria-label="Strengths and weaknesses">
+        <div class="pf-sw-panel">
+          <h2 class="pf-section-title pf-sw-title pf-sw-title--strength">Strengths</h2>
+          <div id="pf-strengths" class="pf-chip-list"></div>
+        </div>
+        <div class="pf-sw-panel">
+          <h2 class="pf-section-title pf-sw-title pf-sw-title--weakness">Weaknesses</h2>
+          <div id="pf-weaknesses" class="pf-chip-list"></div>
+        </div>
+      </section>
+
+      <!-- Similar players -->
+      <section class="pf-section" aria-label="Similar players">
+        <h2 class="pf-section-title">Similar Players</h2>
+        <p id="pf-peer-note" class="pf-peer-note"></p>
+        <div id="pf-similar" class="pf-similar-grid"></div>
+      </section>
+
+      <!-- Compare with another player -->
+      <section class="card pf-section pf-compare-section" aria-label="Compare with another player">
+        <h2 class="pf-section-title">Compare with Another Player</h2>
+        <p class="pf-compare-hint">Search for a player to open a head-to-head comparison.</p>
+        <div class="compare-search-wrapper">
+          <input
+            id="compare-search-input"
+            type="search"
+            class="compare-search-input"
+            placeholder="Search player name…"
+            autocomplete="off"
+            spellcheck="false"
+            aria-label="Search for a player to compare"
+            aria-autocomplete="list"
+            aria-controls="compare-search-dropdown"
+          />
+          <ul
+            id="compare-search-dropdown"
+            class="nav-dropdown"
+            role="listbox"
+            aria-label="Player search results"
+          ></ul>
+        </div>
+      </section>
+
+    </div><!-- /#profile-content -->
   </main>
 
   <script src="/js/api.js"></script>
   <script src="/js/nav.js"></script>
+  <script src="/js/player.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', function () {
       initNav();
-
-      // Read player ID from URL and surface it in the placeholder so
-      // developers can confirm routing works before Phase 3 is built.
-      var params = new URLSearchParams(window.location.search);
-      var id = params.get('id');
-
-      if (!id) {
-        // No ID: redirect to leaderboard rather than showing a blank page.
-        window.location.replace('/');
-        return;
-      }
-
-      var hint = document.getElementById('profile-id-hint');
-      if (hint) {
-        hint.textContent = 'Player ID: ' + id + ' — full profile renders in Phase 3.';
-      }
-
-      // Update page title so browser history shows a useful label.
-      document.title = 'Player ' + id + ' — Football Intelligence';
+      initProfile();
     });
   </script>
 
