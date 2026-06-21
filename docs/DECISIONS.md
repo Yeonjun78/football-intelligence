@@ -436,7 +436,7 @@ If player_id is absent after inspection:
 Future Plan:
 
 MVP 1: Kaggle static download (this decision)
-MVP 2: Evaluate direct FBref CSV export or dataset refresh process
+MVP 2: Dataset refresh process 
 MVP 3: Automated data ingestion layer
 
 ---

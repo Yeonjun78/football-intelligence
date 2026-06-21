@@ -1,163 +1,263 @@
-# Football Intelligence — Tasks
-# Football Intelligence Tasks
+# Football Intelligence - Tasks
 
-Current Development Phase: MVP 1
+## Current Status
 
-Current Goal: AI Player Profile Generator
+Project Phase:
+MVP 1 Development Planning
 
----
-
-# Epic 1 — Project Setup
-
-## Completed
-
-* [x] Create GitHub Repository
-* [x] Initialize Project Structure
-* [x] Create Documentation Structure
-* [x] Create PROJECT_MASTER.md
-* [x] Create ROADMAP.md
-
-## Remaining
-
-* [ ] Create ARCHITECTURE.md
-* [ ] Create DECISIONS.md
-* [ ] Create API_SPEC.md
+Current Goal:
+AI Player Profile Generator
 
 ---
 
-# Epic 2 — Data Source Research
+# MVP 1
 
-## Goal
+## Phase 1 - Project Foundation
 
-Select the primary football data source for MVP 1.
+- [x] Create repository
+- [x] Create project structure
+- [x] Create PROJECT_MASTER.md
+- [x] Create ROADMAP.md
+- [x] Create DECISIONS.md
+- [x] Create ARCHITECTURE.md
+- [x] Create API_SPEC.md
+
+---
+
+## Phase 2 - Data Source Research
+
+### Objective
+
+Identify reliable football data providers.
 
 ### Tasks
 
-* [ ] Evaluate StatsBomb Open Data
-* [ ] Evaluate FBref
-* [ ] Evaluate Transfermarkt
-* [ ] Define MVP 1 data requirements
-* [ ] Select primary data source
+- [ ] Evaluate FBref
+- [ ] Evaluate Understat
+- [ ] Evaluate StatsBomb Open Data
+- [ ] Evaluate Transfermarkt
+- [ ] Define MVP 1 data source
+- [ ] Document data limitations
 
 Deliverable:
 
-Chosen MVP 1 data source.
+Data Source Decision Document
 
 ---
 
-# Epic 3 — MVP 1 Architecture
+## Phase 3 - Backend API
 
-## Goal
+### Objective
 
-Design the technical architecture.
+Build backend service for player data retrieval.
 
 ### Tasks
 
-* [ ] Define frontend architecture
-* [ ] Define backend architecture
-* [ ] Define database architecture
-* [ ] Define AI analysis workflow
-* [ ] Define deployment strategy
+- [ ] Setup FastAPI
+- [ ] Create project configuration
+- [ ] Implement player search endpoint
+- [ ] Implement player profile endpoint
+- [ ] Implement season stats endpoint
+- [ ] Add API validation
+- [ ] Add error handling
 
 Deliverable:
 
-ARCHITECTURE.md
+Working Backend API
 
 ---
 
-# Epic 4 — Player Data Pipeline
+## Phase 4 - Data Pipeline
 
-## Goal
+### Objective
 
-Retrieve player information.
+Collect and normalize football data.
 
 ### Tasks
 
-* [ ] Player search workflow
-* [ ] Player profile workflow
-* [ ] Season statistics workflow
-* [ ] Data normalization
+- [ ] Create player data schema
+- [ ] Create stats normalization layer
+- [ ] Create data fetch service
+- [ ] Create caching strategy
+- [ ] Test data consistency
 
 Deliverable:
 
-Player data pipeline design.
+Unified Player Dataset
 
 ---
 
-# Epic 5 — Backend Development
+## Phase 5 - AI Analysis Engine
 
-## Goal
+### Objective
 
-Build MVP 1 backend.
+Generate automated player scouting reports.
 
 ### Tasks
 
-* [ ] Setup FastAPI
-* [ ] Create player search endpoint
-* [ ] Create player profile endpoint
-* [ ] Create AI analysis endpoint
+- [ ] Define analysis framework
+- [ ] Create strengths logic
+- [ ] Create weaknesses logic
+- [ ] Create playing style classification
+- [ ] Create similar player matching
+- [ ] Generate report output
 
 Deliverable:
 
-Working backend API.
+AI Scouting Engine
 
 ---
 
-# Epic 6 — Frontend Development
+## Phase 6 - Frontend
 
-## Goal
+### Objective
 
-Build MVP 1 UI.
+Build MVP 1 user interface.
 
 ### Tasks
 
-* [ ] Setup Next.js
-* [ ] Create player search page
-* [ ] Create player profile page
-* [ ] Display AI analysis
+- [ ] Setup Next.js
+- [ ] Create homepage
+- [ ] Create search page
+- [ ] Create player profile page
+- [ ] Create stats visualization
+- [ ] Create AI report section
 
 Deliverable:
 
-Working MVP 1 interface.
+Working MVP Interface
 
 ---
 
-# Epic 7 — AI Analysis Engine
+## Phase 7 - Testing
 
-## Goal
+### Objective
 
-Generate scouting-style analysis.
+Validate MVP functionality.
 
 ### Tasks
 
-* [ ] Define AI prompt template
-* [ ] Generate strengths
-* [ ] Generate weaknesses
-* [ ] Generate playing style
-* [ ] Generate similar players
+- [ ] Backend testing
+- [ ] Frontend testing
+- [ ] API testing
+- [ ] Data validation
+- [ ] User acceptance testing
 
 Deliverable:
 
-AI-generated player report.
+Stable MVP Release
 
 ---
 
-# Epic 8 — MVP 1 Release
+# MVP 2
 
-## Goal
+Analytics Dashboard
 
-Deploy MVP 1.
+Status:
+Planned
 
-### Tasks
+Tasks:
 
-* [ ] End-to-end testing
-* [ ] Bug fixing
-* [ ] Deployment
-* [ ] Documentation update
+- [ ] Team dashboard
+- [ ] League dashboard
+- [ ] Player comparison
+- [ ] Statistical visualizations
 
-Deliverable:
+---
 
-Football Intelligence MVP 1 Release.
+# MVP 2.1
+
+Advanced Analytics Dashboard
+
+Status:
+Planned
+
+Tasks:
+
+- [ ] xG dashboard
+- [ ] xA dashboard
+- [ ] Possession analytics
+- [ ] Passing network analysis
+- [ ] Performance trend analysis
+
+---
+
+# MVP 3
+
+AI Scout
+
+Status:
+Planned
+
+Tasks:
+
+- [ ] Player recommendation engine
+- [ ] Transfer target ranking
+- [ ] Position fit analysis
+- [ ] Squad gap analysis
+
+---
+
+# MVP 4
+
+AI Football Intelligence Agent
+
+Status:
+Planned
+
+Tasks:
+
+- [ ] Natural language querying
+- [ ] Football knowledge retrieval
+- [ ] Multi-player analysis
+- [ ] Tactical insights
+
+---
+
+# MVP 5
+
+AI Director of Football Assistant
+
+Status:
+Planned
+
+Tasks:
+
+- [ ] Transfer planning
+- [ ] Budget optimization
+- [ ] Squad planning
+- [ ] Long-term recruitment strategy
+
+---
+
+# MVP 6
+
+Multi-League Expansion
+
+Status:
+Planned
+
+Tasks:
+
+- [ ] Top 5 leagues support
+- [ ] International competitions
+- [ ] Youth competitions
+
+---
+
+# MVP 7
+
+Commercial Platform
+
+Status:
+Planned
+
+Tasks:
+
+- [ ] Authentication
+- [ ] Subscription system
+- [ ] Team accounts
+- [ ] Enterprise features
 
 ---
 
